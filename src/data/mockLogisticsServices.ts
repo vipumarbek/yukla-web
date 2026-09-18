@@ -1,0 +1,447 @@
+export interface LogisticsProduct {
+  id: number;
+  title: string;
+  category: string;
+  price: number;
+  currency: "UZS";
+  location: string;
+  description: string;
+  rating: number;
+  completedOrders: number;
+  deliveryTime: string;
+  companyName: string;
+  image: string;
+}
+
+export const MOCK_LOGISTICS_SERVICES: LogisticsProduct[] = [
+  // 1. Freight transportation
+  {
+    "id": 1,
+    "title": "Toshkent - Samarqand Og'ir yuk tashish",
+    "category": "Freight transportation",
+    "price": 4500000,
+    "currency": "UZS",
+    "location": "Toshkent - Samarqand",
+    "description": "Fura Tent rusumli yuk mashinalarida 20 tonnagacha bo'lgan og'ir sanoat va qishloq xo'jaligi yuklarini viloyatlararo xavfsiz va kafolatlangan yetkazish. Premium darajali xizmat, to'liq sug'urta qilingan.",
+    "rating": 4.9,
+    "completedOrders": 320,
+    "deliveryTime": "1 kun",
+    "companyName": "UzLogistics Express LLC",
+    "image": "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 2,
+    "title": "Andijon - Toshkent To'qimachilik logistikasi",
+    "category": "Freight transportation",
+    "price": 3200000,
+    "currency": "UZS",
+    "location": "Andijon - Toshkent",
+    "description": "Isuzu 5 yuk mashinasida vagon ko'rinishidagi yopiq kuzovda to'qimachilik mahsulotlarini yetkazish. Standart xizmat ko'rsatish darajasi, sifat va tezkor yuk ortish kafolatlanadi.",
+    "rating": 4.7,
+    "completedOrders": 190,
+    "deliveryTime": "12-16 soat",
+    "companyName": "Fergana Valley Cargo",
+    "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 3,
+    "title": "Buxoro - Toshkent Qurilish mollari reysi",
+    "category": "Freight transportation",
+    "price": 5500000,
+    "currency": "UZS",
+    "location": "Buxoro - Toshkent",
+    "description": "Uzoq masofali magistral yo'llarda qurilish va bezak ashyolarini ochiq tirkamali Shalanda transportlarida tashish. Ekonom tarif, ishonchli va arzon zanjir.",
+    "rating": 4.5,
+    "completedOrders": 145,
+    "deliveryTime": "1.5 kun",
+    "companyName": "Bukhara Trans-Group",
+    "image": "https://images.unsplash.com/photo-1501526029524-a8ea952b15be?auto=format&fit=crop&w=600&q=80"
+  },
+  // 2. Truck rental
+  {
+    "id": 4,
+    "title": "Sutkalik Labo micro-yuk mashinasi ijarasi",
+    "category": "Truck rental",
+    "price": 350000,
+    "currency": "UZS",
+    "location": "Toshkent shahri",
+    "description": "Shahar ichida kichik hajmdagi mebellar va shaxsiy buyumlarni ko'chirish uchun Labo ijarasi. Ekonom xizmati, haydovchisiz yoki haydovchi bilan taqdim etiladi.",
+    "rating": 4.8,
+    "completedOrders": 1250,
+    "deliveryTime": "Sutkalik ijara",
+    "companyName": "Lola Rent-Trucks",
+    "image": "https://images.unsplash.com/photo-1516576900018-1039419b66ad?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 5,
+    "title": "Chevrolet Bongo Izotermik furgon ijarasi",
+    "category": "Truck rental",
+    "price": 600000,
+    "currency": "UZS",
+    "location": "Samarqand shahri",
+    "description": "Hajmli, izotermik datchikli Chevrolet Bongo drayver yuk avtomobili ijarasi. Oziq-ovqat yetkazib berishga moslashtirilgan. Standart xizmat ko'rsatish darajasi.",
+    "rating": 4.6,
+    "completedOrders": 410,
+    "deliveryTime": "Sutkalik ijara",
+    "companyName": "SamAuto Rental Group",
+    "image": "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 6,
+    "title": "Og'ir tonnajli ISUZU 10 yuk mashinasi ijarasi",
+    "category": "Truck rental",
+    "price": 1800000,
+    "currency": "UZS",
+    "location": "Namangan shahri",
+    "description": "10 tonnagacha sig'imga ega bo'lgan Isuzu yuk mashinalari parkini uzoq muddatli ijaraga berish. Premium darajadagi transport vositasi, texnik ko'rik to'liq o'tgan.",
+    "rating": 4.9,
+    "completedOrders": 85,
+    "deliveryTime": "24 soat",
+    "companyName": "Namangan Transport Servis",
+    "image": "https://images.unsplash.com/photo-1592838064575-70ed626d3a44?auto=format&fit=crop&w=600&q=80"
+  },
+  // 3. Cargo delivery
+  {
+    "id": 7,
+    "title": "Toshkent bo'ylab Tezkor mebel ko'chirish jamoasi",
+    "category": "Cargo delivery",
+    "price": 450000,
+    "currency": "UZS",
+    "location": "Toshkent shahri",
+    "description": "Uylar va ofis ko'chirish bo'yicha professional ishchilar guruhi va Labo/Bongo xizmati. Premium paketga qadoqlash, yuklash va yangi manzilga joylash kiradi.",
+    "rating": 4.9,
+    "completedOrders": 960,
+    "deliveryTime": "3-5 soat",
+    "companyName": "YukLa Prime Movers",
+    "image": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 8,
+    "title": "Farg'ona - Namangan Kichik korporativ yuk yetkazish",
+    "category": "Cargo delivery",
+    "price": 950000,
+    "currency": "UZS",
+    "location": "Farg'ona - Namangan",
+    "description": "Do'konlar, savdo nuqtalari uchun kichik qutilar va tovar namunalari yetkazish. Standart xizmat ko'rsatish darajasi, har bir yuk to'liq muhrlangan.",
+    "rating": 4.6,
+    "completedOrders": 340,
+    "deliveryTime": "6-8 soat",
+    "companyName": "Vodiy Cargo Log",
+    "image": "https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 9,
+    "title": "Andijon viloyati bo'ylab Arzon shaxsiy yuk ortish",
+    "category": "Cargo delivery",
+    "price": 250000,
+    "currency": "UZS",
+    "location": "Andijon viloyati",
+    "description": "Andijon shahri va atrofdagi tumanlarga arzon va hamyonbop shaxsiy buyumlar eltuvchi reyslar. Ekonom tarif, asosan maishiy texnika tashuvlari.",
+    "rating": 4.4,
+    "completedOrders": 520,
+    "deliveryTime": "4 soat",
+    "companyName": "Andijan Express-D",
+    "image": "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80"
+  },
+  // 4. International shipping
+  {
+    "id": 10,
+    "title": "Toshkent - Olmata MDH doirasidagi tranzit yuk",
+    "category": "International shipping",
+    "price": 15000000,
+    "currency": "UZS",
+    "location": "Xalqaro tranzit (O'zbekiston - Qozog'iston)",
+    "description": "Yevro-standartdagi 22 tonnalik furalar yordamida eksport-import operatsiyalarini amalga oshirish. Premium logistika, GPS datchiklar, bojxona hujjatlar ko'magi.",
+    "rating": 5.0,
+    "completedOrders": 74,
+    "deliveryTime": "3 kun",
+    "companyName": "Silk Road Global Transit",
+    "image": "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 11,
+    "title": "Toshkent - Moskva FTL Konsolidatsiyalangan reys",
+    "category": "International shipping",
+    "price": 28000000,
+    "currency": "UZS",
+    "location": "Xalqaro (Toshkent - Moskva)",
+    "description": "FTL (Full Truck Load) shaklidagi to'liq qamrovli xalqaro yuk reysi. Standart qadoqlash kafolati, ko'p yillik bojxona mutaxassislari kuzatuvida.",
+    "rating": 4.8,
+    "completedOrders": 55,
+    "deliveryTime": "6-7 kun",
+    "companyName": "Eurasia Freight Carrier",
+    "image": "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 12,
+    "title": "Samarqand - Urumchi Sanoat mahsulotlari eksporti",
+    "category": "International shipping",
+    "price": 35000000,
+    "currency": "UZS",
+    "location": "Xalqaro (Samarqand - Xitoy)",
+    "description": "Sharqiy Osiyo va Xitoy yo'nalishlarida og'ir yuk tirkamalarini tashish, TIR tizimida rasmiylashtirish. Ekonom-tarif tizimiga ega arzon va barqaror marshrut.",
+    "rating": 4.7,
+    "completedOrders": 42,
+    "deliveryTime": "10 kun",
+    "companyName": "Samarkand East-Link",
+    "image": "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80"
+  },
+  // 5. Warehouse services
+  {
+    "id": 13,
+    "title": "Toshkent A-Klass Isitiladigan logistika markazi",
+    "category": "Warehouse services",
+    "price": 120000,
+    "currency": "UZS",
+    "location": "Toshkent, Sergeli",
+    "description": "Harorat nazorati, 24/7 video kuzatuv va zamonaviy WMS tizimiga ega A-klass omboridan 1 kv.m maydon ijarasi. Premium xizmati, har bir tovar sug'urtalangan.",
+    "rating": 4.9,
+    "completedOrders": 210,
+    "deliveryTime": "Oylik obuna / 1 kv.m",
+    "companyName": "Toshkent Logis-Hub",
+    "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 14,
+    "title": "Samarqand Standart quruq ombor-terminali",
+    "category": "Warehouse services",
+    "price": 80000,
+    "currency": "UZS",
+    "location": "Samarqand shahri",
+    "description": "Qurilish materiallari va mebellar, nooziq-ovqat toifalari uchun xavfsiz quruq saqlash ombori. Standart daraja, qulay temir yo'l shaxobchasiga ega.",
+    "rating": 4.5,
+    "completedOrders": 130,
+    "deliveryTime": "Oylik obuna / 1 kv.m",
+    "companyName": "Registon Storage",
+    "image": "https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 15,
+    "title": "Farg'ona ochiq kranli sanoat maydoni saqlash xizmati",
+    "category": "Warehouse services",
+    "price": 40000,
+    "currency": "UZS",
+    "location": "Farg'ona, Qirguli",
+    "description": "Og'ir quvurlar, metall konstruksiyalar va beton bloklarni saqlashga mo'ljallangan ochiq kranli saqlash maydoni. Ekonom tarif, eng arzon yechim.",
+    "rating": 4.2,
+    "completedOrders": 90,
+    "deliveryTime": "Oylik obuna / 1 kv.m",
+    "companyName": "Fergana Industrial Yard",
+    "image": "https://images.unsplash.com/photo-1501526029524-a8ea952b15be?auto=format&fit=crop&w=600&q=80"
+  },
+  // 6. Customs clearance
+  {
+    "id": 16,
+    "title": "Sertifikatlashtirish va to'liq eksport deklaratsiyasi",
+    "category": "Customs clearance",
+    "price": 1200000,
+    "currency": "UZS",
+    "location": "Toshkent, Ark-Buloq",
+    "description": "O'zbekistonda tovarlar eksporti uchun bojxona rasmiylashtiruvi, elektron hujjatlarni to'ldirish va sertifikatlashtirish xizmati. Premium, xatolarsiz va tezkor o'tkazish.",
+    "rating": 5.0,
+    "completedOrders": 480,
+    "deliveryTime": "12-24 soat",
+    "companyName": "Customs Expert Support",
+    "image": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 17,
+    "title": "Import tranziti rasmiylashtirish ko'magi (HS Code)",
+    "category": "Customs clearance",
+    "price": 850000,
+    "currency": "UZS",
+    "location": "Toshkent viloyati",
+    "description": "TIF bo'yicha kodlarni tanlash, import bojxona to'lovlarini hisoblash va yuklarni deklaratsiyalash maslahatchisi. Standart xizmat ko'rsatish darajasi.",
+    "rating": 4.6,
+    "completedOrders": 280,
+    "deliveryTime": "1 kun",
+    "companyName": "Toshkent Broker Alliance",
+    "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 18,
+    "title": "Buxoro bojxona postlarida deklaratsiyalash (Ekonom)",
+    "category": "Customs clearance",
+    "price": 500000,
+    "currency": "UZS",
+    "location": "Buxoro viloyati",
+    "description": "Buxoro bojxona shaxobchalari orqali o'tayotgan qishloq xo'jaligi yuklari uchun arzon va soddalashtirilgan deklaratsiya xizmati. Ekonom xizmati.",
+    "rating": 4.4,
+    "completedOrders": 175,
+    "deliveryTime": "2 kun",
+    "companyName": "Varaqsha Customs Agency",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80"
+  },
+  // 7. Courier services
+  {
+    "id": 19,
+    "title": "Toshkent shahri bo'ylab VIP Hujjat-kuryer reysi",
+    "category": "Courier services",
+    "price": 45000,
+    "currency": "UZS",
+    "location": "Toshkent shahri",
+    "description": "Maxfiy tijoriy shartnomalar, pullar yoki pasport kabi muhim hujjatlarni eshikdan eshikkacha yetkazish. Premium xizmat, to'liq shaffof kuzatuv va shifrlangan muhr.",
+    "rating": 5.0,
+    "completedOrders": 3400,
+    "deliveryTime": "60 daqiqa",
+    "companyName": "YukLa Courier Speed",
+    "image": "https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 20,
+    "title": "Toshkent - Samarqand 12 soatlik Ekspress konvert",
+    "category": "Courier services",
+    "price": 35000,
+    "currency": "UZS",
+    "location": "Toshkent - Samarqand",
+    "description": "Viloyatlararo kichik qutilar va yozishmalarni tezyurar reyslar orqali yetkazish. Standart xizmati, har bir yuk SMS xabarnoma bilan himoyalangan.",
+    "rating": 4.8,
+    "completedOrders": 1850,
+    "deliveryTime": "12 soat",
+    "companyName": "Samarkand Courier Express",
+    "image": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 21,
+    "title": "Buxoro - Andijon pochtalari (Ekonom reys)",
+    "category": "Courier services",
+    "price": 20000,
+    "currency": "UZS",
+    "location": "Buxoro - Andijon",
+    "description": "Tizimli va guruhli pochta reyslari orqali kuryerlik yetkazmalari. Ekonom daraja, haftada ikki marta jo'natiladigan avtobus to'plamlari orqali ishonchli zanjir.",
+    "rating": 4.3,
+    "completedOrders": 920,
+    "deliveryTime": "36-48 soat",
+    "companyName": "UzPost Regional Depot",
+    "image": "https://images.unsplash.com/photo-1516576900018-1039419b66ad?auto=format&fit=crop&w=600&q=80"
+  },
+  // 8. Cold chain transportation
+  {
+    "id": 22,
+    "title": "Muzlatilgan go'sht va dori-darmonlar Refrejiratori",
+    "category": "Cold chain transportation",
+    "price": 6000000,
+    "currency": "UZS",
+    "location": "Toshkent - Farg'ona",
+    "description": "Aktiv sovutgich va datchikli Refrejirator tirkamasida -18°C dan +4°C gacha haroratni ushlab turish. Premium logistika, dori-darmon sertifikatiga ega.",
+    "rating": 5.0,
+    "completedOrders": 220,
+    "deliveryTime": "12 soat",
+    "companyName": "YukLa Cold-Line Solutions",
+    "image": "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 23,
+    "title": "Sut mahsulotlari yetkazish sovitgichli Isuzu reysi",
+    "category": "Cold chain transportation",
+    "price": 3800000,
+    "currency": "UZS",
+    "location": "Samarqand - Toshkent",
+    "description": "Samarqand sutchilik zavodlaridan poytaxt do'konlariga tez buziladigan mahsulotlarni termik izolyatsiyalangan Isuzu reysida yetkazish. Standart xizmati.",
+    "rating": 4.8,
+    "completedOrders": 390,
+    "deliveryTime": "10-12 soat",
+    "companyName": "SamMilk Logistics",
+    "image": "https://images.unsplash.com/photo-1592838064575-70ed626d3a44?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 24,
+    "title": "Meyva-cheva tashish uchun muzlatgichli Bongo (Ekonom)",
+    "category": "Cold chain transportation",
+    "price": 850000,
+    "currency": "UZS",
+    "location": "Namangan - Toshkent",
+    "description": "Fermer xo'jaliklari uchun yangi uzilgan mevalarni bozorgacha sovutilgan Chevrolet Bongo mashinasida yetkazish. Ekonom xizmati, munosib harorat.",
+    "rating": 4.5,
+    "completedOrders": 195,
+    "deliveryTime": "8 soat",
+    "companyName": "Valley Fresh Horti",
+    "image": "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80"
+  },
+  // 9. Container transport
+  {
+    "id": 25,
+    "title": "20 futlik og'ir xalqaro konteyner platformasi",
+    "category": "Container transport",
+    "price": 7500000,
+    "currency": "UZS",
+    "location": "Toshkent - Xitoy chegarasi",
+    "description": "20 futlik standart xalqaro dengiz/poyezd konteynerlarini tortuvchi maxsus Fura platformalar reysi. Premium darajadagi xavfsiz va ishonchli zanjir, real vaqtda kuzatuv.",
+    "rating": 4.9,
+    "completedOrders": 150,
+    "deliveryTime": "2 kun",
+    "companyName": "Container King Central Asia",
+    "image": "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 26,
+    "title": "40 futlik sanoat metall-konteyner yetkazish",
+    "category": "Container transport",
+    "price": 11000000,
+    "currency": "UZS",
+    "location": "Buxoro - Toshkent",
+    "description": "Eng og'ir 40 futlik import konteynerlarini temir yo'l stansiyasidan buyurtmachi zavod hovlisigacha transportirovka qilish. Standart daraja, kuchli texnika.",
+    "rating": 4.7,
+    "completedOrders": 110,
+    "deliveryTime": "1.5 kun",
+    "companyName": "Trans-Uzbek Container Lines",
+    "image": "https://images.unsplash.com/photo-1501526029524-a8ea952b15be?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 27,
+    "title": "Kichik aralash konteyner yechimi (LCL - Ekonom)",
+    "category": "Container transport",
+    "price": 1900000,
+    "currency": "UZS",
+    "location": "Toshkent - Samarqand",
+    "description": "Konteyner ichida konsolidatsiyalangan aralash yuklarni (LCL) arzon tashish va manzilga yetkazguncha omborda ushlab turish. Ekonom xizmati.",
+    "rating": 4.3,
+    "completedOrders": 240,
+    "deliveryTime": "3 kun",
+    "companyName": "LCL Share Logistics",
+    "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80"
+  },
+  // 10. Express delivery
+  {
+    "id": 28,
+    "title": "Shahar ichida 30 daqiqalik dori-darmon ekspress",
+    "category": "Express delivery",
+    "price": 25000,
+    "currency": "UZS",
+    "location": "Toshkent shahri",
+    "description": "Zudlik bilan topilishi zarur bo'lgan tibbiy anjomlar va dori-darmonlarni aptekalardan VIP tezlikda bemorgacha yetkazish. Premium, eng yuqori prioritetli yo'nalish.",
+    "rating": 5.0,
+    "completedOrders": 4500,
+    "deliveryTime": "30 daqiqa",
+    "companyName": "YukLa Express Pharma",
+    "image": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 29,
+    "title": "Restoran va kafelardan issiq taomlar yetkazish",
+    "category": "Express delivery",
+    "price": 18005,
+    "currency": "UZS",
+    "location": "Samarqand shahri",
+    "description": "Samarqandning eng sara kafelaridan shinam termik sumkalarda issiqligicha yetkazish xizmati. Standart daraja, tajribali moto-kuryerlar guruhi.",
+    "rating": 4.8,
+    "completedOrders": 2890,
+    "deliveryTime": "40 daqiqa",
+    "companyName": "Registan Food Delivery",
+    "image": "https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 30,
+    "title": "Tijoriy mahsulotlarni arzon kuryerlik tarqatish",
+    "category": "Express delivery",
+    "price": 12000,
+    "currency": "UZS",
+    "location": "Andijon shahri",
+    "description": "Onlayn do'konlar va tijoratchilar uchun Andijon shahri bo'yicha arzon massiv tovar yetkazib berish xizmati. Ekonom xizmati, munosib narxlar.",
+    "rating": 4.5,
+    "completedOrders": 3200,
+    "deliveryTime": "120 daqiqa",
+    "companyName": "Andijan Valley-Dis",
+    "image": "https://images.unsplash.com/photo-1516576900018-1039419b66ad?auto=format&fit=crop&w=600&q=80"
+  }
+];

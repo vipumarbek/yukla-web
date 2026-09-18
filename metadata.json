@@ -1,0 +1,6 @@
+{
+  "name": "YukLa",
+  "description": "YukLa - World-Class Logistics & Freight Marketplace. Move Anything, Anywhere, Anytime.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

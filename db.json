@@ -1,0 +1,91 @@
+{
+  "users": [
+    {
+      "id": "admin-uid",
+      "email": "admin@yukla.com",
+      "name": "Umarbek Ravshanbekovich",
+      "role": "admin",
+      "passwordHash": "$2b$10$pU933dSw/iHBeNXpksQu/.4tjEiDfzRSJRug3Z4BQDhe6vzqfpVbm",
+      "phone": "+998 90 123 45 67",
+      "verified": true,
+      "verificationStatus": "approved",
+      "emailVerified": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "language": "uz"
+    }
+  ],
+  "orders": [],
+  "revenueHistory": [],
+  "companies": [],
+  "companyTrucks": [],
+  "companyDrivers": [],
+  "companyExpenses": [],
+  "companyInvoices": [],
+  "companyApiKeys": [],
+  "companyWebhooks": [],
+  "escrowAccounts": [],
+  "payouts": [],
+  "payments": [],
+  "subscriptions": [],
+  "transactions": [],
+  "wallets": [],
+  "tenders": [],
+  "fuelAdvances": [],
+  "auditLogs": [],
+  "reviews": [],
+  "systemSettings": {
+    "escrowCommissionRate": 0.01,
+    "maintenanceMode": false
+  },
+  "corridors": [
+    {
+      "id": "corr-01",
+      "name": "Toshkent - Samarqand - Buxoro Magistrali (M39/M37)",
+      "originCity": "Toshkent",
+      "originCountry": "O'zbekiston",
+      "destinationCity": "Buxoro",
+      "destinationCountry": "O'zbekiston",
+      "distanceKm": 580,
+      "avgTransitDays": 1,
+      "avgBorderWaitHours": 0,
+      "spotRatePerKmSom": 9500,
+      "customsDutyEstimateUsd": 0,
+      "greenCorridorCertified": true,
+      "activeTrucksCount": 0,
+      "popularCargos": ["Qurilish mollari", "Oziq-ovqat", "To'qimachilik"]
+    },
+    {
+      "id": "corr-02",
+      "name": "Toshkent - Chimkent - Olmaota Xalqaro Yo'lagi (A2)",
+      "originCity": "Toshkent",
+      "originCountry": "O'zbekiston",
+      "destinationCity": "Olmaota",
+      "destinationCountry": "Qozog'iston",
+      "distanceKm": 810,
+      "avgTransitDays": 2,
+      "avgBorderWaitHours": 4.5,
+      "spotRatePerKmSom": 13200,
+      "customsDutyEstimateUsd": 140,
+      "greenCorridorCertified": false,
+      "activeTrucksCount": 0,
+      "popularCargos": ["Meva-sabzavot", "Plastmassa", "Kimyoviy xomashyo"]
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq-1",
+      "questionUz": "YukLa nima va u qanday ishlaydi?",
+      "questionEn": "What is YukLa and how does it work?",
+      "questionRu": "Что такое YukLa и как это работает?",
+      "questionTr": "YukLa nedir ve nasıl çalışır?",
+      "questionAr": "ما هو YukLa وكيف يعمل؟",
+      "questionZh": "什么是 YukLa，以及它如何运作？",
+      "answerUz": "YukLa — O‘zbekiston va Markaziy Osiyo bo‘ylab yuk egalari va professional haydovchilarni xavfsiz Escrow to‘lov tizimi orqali bog‘lovchi aqlli logistika platformasi.",
+      "answerEn": "YukLa is a smart logistics platform connecting shippers and professional carriers across Uzbekistan and Central Asia with secure Escrow settlement.",
+      "answerRu": "YukLa — умная логистическая платформа, объединяющая грузоотправителей и перевозчиков с безопасным эскроу-расчетом.",
+      "answerTr": "YukLa, Özbekistan ve Orta Asya'da yük sahipleri ile sürücüleri güvenli Escrow sistemiyle buluşturan lojistik platformudur.",
+      "answerAr": "YukLa هي منصة لوجستية ذكية تربط الشاحنين والناقلين في أوزبكستان وآسيا الوسطى.",
+      "answerZh": "YukLa 是一个智能物流平台，通过安全的 Escrow 结算系统连接乌兹别克斯坦和中亚地区的货主和承运人。"
+    }
+  ]
+}

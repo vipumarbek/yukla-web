@@ -1,0 +1,439 @@
+// ==============================================================================
+// Prisma Schema for "YukLa" — Next-Generation Freight Logistics & Escrow Marketplace
+// Configured for PostgreSQL on Google Cloud Run & Cloud SQL with Edge Compatibility
+// ==============================================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+enum Role {
+  CUSTOMER
+  DRIVER
+  COMPANY
+  ADMIN
+  SUPERADMIN
+}
+
+enum SubscriptionPlan {
+  ODDIY
+  PRO
+  VIP
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PENDING
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTION_REQUIRED
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  LOADING
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+enum EscrowState {
+  CREATED
+  ESCROW_HOLD
+  ASSIGNED
+  IN_TRANSIT
+  DELIVERED_PENDING_CONFIRMATION
+  SETTLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  PAYME
+  CLICK
+  UZUM
+  BANK_BILLING
+}
+
+enum PayoutProvider {
+  UZCARD_HUMO_DIRECT
+  CLICK_PAYOUT
+  BANK_CLEARING
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+}
+
+enum VehicleCategory {
+  LABO
+  BONGO
+  FURGON
+  ISUZU_5
+  ISUZU_10
+  GRUZOVIK
+  FURA_TENT
+  FURA_BUDKA
+  REFREJIRATOR
+  PARAVOZ
+  SHALANDA
+}
+
+// ------------------------------------------------------------------------------
+// 1. User & Identity
+// ------------------------------------------------------------------------------
+model User {
+  id                 String             @id @default(uuid())
+  phone              String             @unique
+  email              String?            @unique
+  name               String
+  passwordHash       String
+  role               Role               @default(CUSTOMER)
+  verified           Boolean            @default(false)
+  verificationStatus VerificationStatus @default(PENDING)
+  walletBalance      BigInt             @default(0) // In Uzbek so'm (tiyin-safe or integer UZS)
+  rating             Float              @default(5.0)
+  ratingCount        Int                @default(0)
+  language           String             @default("uz")
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  profile            Profile?
+  subscriptions      Subscription[]
+  verifications      DriverVerification[]
+  vehicles           Vehicle[]
+  ordersAsCustomer   Order[]            @relation("CustomerOrders")
+  ordersAsDriver     Order[]            @relation("DriverOrders")
+  escrowPayments     EscrowPayment[]    @relation("CustomerPayments")
+  payoutLogs         PayoutLog[]        @relation("DriverPayouts")
+  reviewsGiven       Review[]           @relation("ReviewsGiven")
+  reviewsReceived    Review[]           @relation("ReviewsReceived")
+
+  @@index([phone])
+  @@index([role])
+}
+
+// ------------------------------------------------------------------------------
+// 2. Profile & KYC Biometric Settings
+// ------------------------------------------------------------------------------
+model Profile {
+  id                   String    @id @default(uuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName          String?
+  companyTaxId         String?   // STIR / INN
+  ownerName            String?
+  address              String?
+  avatarUrl            String?
+  biometricKeyHandle   String?   // FIDO2 / WebAuthn Credential ID
+  biometricPublicKey   String?   // FIDO2 Public Key PEM
+  fido2Registered      Boolean   @default(false)
+  notificationPush     Boolean   @default(true)
+  notificationSms      Boolean   @default(true)
+  preferredCardNumber  String?   // Masked e.g. 8600 **** **** 1234
+  cardToken            String?   // Encrypted Token for Humo/Uzcard Payouts
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+// ------------------------------------------------------------------------------
+// 3. SaaS Tiered Subscriptions (ODDIY, PRO, VIP)
+// ------------------------------------------------------------------------------
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan   @default(ODDIY)
+  status               SubscriptionStatus @default(ACTIVE)
+  price                Int                @default(0) // 0 UZS, 149,000 UZS, or 299,000 UZS
+  currency             String             @default("UZS")
+  maxActiveOrders      Int                @default(2) // ODDIY: 2, PRO: 10, VIP: 99999
+  priorityListing      Boolean            @default(false)
+  earlyAlertsMinutes   Int                @default(0) // 0 for ODDIY, 5 for PRO, 15 for VIP
+  backhaulAiEnabled    Boolean            @default(false)
+  dedicatedManager     Boolean            @default(false)
+  electronicTtnEnabled Boolean            @default(false)
+  instantClearing      Boolean            @default(false)
+  startedAt            DateTime           @default(now())
+  expiresAt            DateTime?
+  autoRenew            Boolean            @default(true)
+  paymentProvider      PaymentProvider?
+  transactionId        String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([userId, plan, status])
+}
+
+// ------------------------------------------------------------------------------
+// 4. Driver KYC Verification (Driver's License, Tech Passport, Truck Photos)
+// ------------------------------------------------------------------------------
+model DriverVerification {
+  id                   String             @id @default(uuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licenseNumber        String             // Haydovchilik guvohnomasi
+  licensePhotoUrl      String             // GCS signed URL / storage path
+  techPassportNumber   String             // Texnik pasport raqami
+  techPassportPhotoUrl String             // GCS signed URL / storage path
+  vehiclePhotoUrl      String             // Mashina fotosi
+  status               VerificationStatus @default(PENDING)
+  rejectionReason      String?
+  reviewedByAdminId    String?
+  reviewedAt           DateTime?
+  submittedAt          DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([userId, status])
+}
+
+// ------------------------------------------------------------------------------
+// 5. Vehicles (Truck Fleet)
+// ------------------------------------------------------------------------------
+model Vehicle {
+  id                String          @id @default(uuid())
+  driverId          String
+  driver            User            @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  category          VehicleCategory @default(FURA_TENT)
+  brand             String          // e.g. MAN, Isuzu, Kamaz, Labo
+  model             String?
+  plateNumber       String          // e.g. 01 A 777 AA
+  capacityKg        Int             // e.g. 20000 kg
+  volumeM3          Float           // e.g. 86.0 m3
+  hasRefrigeration  Boolean         @default(false)
+  isAvailable       Boolean         @default(true)
+  currentLat        Float?
+  currentLng        Float?
+  lastLocationAt    DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  orders            Order[]
+
+  @@index([driverId, isAvailable])
+}
+
+// ------------------------------------------------------------------------------
+// 6. Order & Intelligent 5-Step Wizard Lifecycle
+// ------------------------------------------------------------------------------
+model Order {
+  id                     String           @id @default(uuid())
+  orderNumber            String           @unique // e.g. YUK-2026-98124
+  customerId             String
+  customer               User             @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Restrict)
+  driverId               String?
+  driver                 User?            @relation("DriverOrders", fields: [driverId], references: [id], onDelete: SetNull)
+  vehicleId              String?
+  vehicle                Vehicle?         @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  tier                   SubscriptionPlan @default(ODDIY)
+  status                 OrderStatus      @default(PENDING)
+  escrowState            EscrowState      @default(CREATED)
+
+  // Step 1: Route & GPS
+  originRegion           String
+  originCity             String
+  originAddress          String
+  originLat              Float?
+  originLng              Float?
+  destinationRegion      String
+  destinationCity        String
+  destinationAddress     String
+  destLat                Float?
+  destLng                Float?
+  distanceKm             Int              @default(1)
+
+  // Step 2: Cargo Specifications
+  cargoType              String           // e.g. Qurilish mollari, Oziq-ovqat, Meva-sabzavot
+  weightKg               Int              // in Kilograms
+  volumeM3               Float            // in Cubic Meters
+  temperatureMin         Float?
+  temperatureMax         Float?
+  isFragile              Boolean          @default(false)
+  cargoDescription       String?
+  cargoPhotoUrl          String?
+
+  // Step 3: Fleet Selection & Pricing Engine
+  vehicleTypeRequired    VehicleCategory  @default(FURA_TENT)
+  price                  BigInt           // Total Order Value in UZS
+  commission1Percent     BigInt           // 1% Escrow platform fee = price * 0.01
+  driverPayout99Percent  BigInt           // 99% Driver payout = price * 0.99
+  fairPriceEstimate      BigInt?
+  backhaulDiscount       BigInt?          @default(0)
+
+  // Step 4: Contact Details
+  senderPhone            String
+  receiverPhone          String
+  receiverName           String?
+  deliveryInstructions   String?
+
+  // Step 5: Escrow Checkout & Delivery Proof
+  deliveryProofPhotoUrl  String?          // Photo of signed TTN / Invoice
+  deliveryProofLat       Float?
+  deliveryProofLng       Float?
+  deliveryTtnNumber      String?
+  deliveryProofNotes     String?
+  deliveredAt            DateTime?
+  settledAt              DateTime?
+  cancelledAt            DateTime?
+
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  escrowPayments         EscrowPayment[]
+  payoutLogs             PayoutLog[]
+  reviews                Review[]
+
+  @@index([status, escrowState])
+  @@index([customerId])
+  @@index([driverId])
+  @@index([tier])
+  @@index([originRegion, destinationRegion])
+}
+
+// ------------------------------------------------------------------------------
+// 7. Automated Escrow Safe Holding
+// ------------------------------------------------------------------------------
+model EscrowPayment {
+  id                 String          @id @default(uuid())
+  orderId            String
+  order              Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customerId         String
+  customer           User            @relation("CustomerPayments", fields: [customerId], references: [id], onDelete: Restrict)
+  amount             BigInt          // Full 100% held
+  provider           PaymentProvider @default(PAYME)
+  providerHoldId     String?         // External payment reference
+  status             String          @default("HOLD") // HOLD, RELEASED, REFUNDED, DISPUTED
+  heldAt             DateTime        @default(now())
+  releasedAt         DateTime?
+  refundedAt         DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([orderId, status])
+}
+
+// ------------------------------------------------------------------------------
+// 8. 99% Driver Automated Payout & 1% Revenue Ledger
+// ------------------------------------------------------------------------------
+model PayoutLog {
+  id                 String         @id @default(uuid())
+  orderId            String
+  order              Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  driverId           String
+  driver             User           @relation("DriverPayouts", fields: [driverId], references: [id], onDelete: Restrict)
+  grossOrderAmount   BigInt
+  platform1Fee       BigInt         // 1% Platform Commission
+  netDriverPayout    BigInt         // 99% Disbursed to Driver
+  recipientCardMask  String         // e.g. 8600 **** **** 9012
+  cardToken          String?
+  provider           PayoutProvider @default(UZCARD_HUMO_DIRECT)
+  status             PayoutStatus   @default(SUCCESS)
+  transactionRef     String?
+  settledAt          DateTime       @default(now())
+  createdAt          DateTime       @default(now())
+
+  @@index([driverId, status])
+  @@index([orderId])
+}
+
+// ------------------------------------------------------------------------------
+// 9. Verified Reviews & Ratings
+// ------------------------------------------------------------------------------
+model Review {
+  id                 String    @id @default(uuid())
+  orderId            String
+  order              Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  reviewerId         String
+  reviewer           User      @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  targetUserId       String
+  targetUser         User      @relation("ReviewsReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
+  rating             Int       @default(5)
+  comment            String
+  cargoType          String?
+  originCity         String?
+  destinationCity    String?
+  isVerified         Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+
+  @@index([targetUserId])
+  @@index([orderId])
+}
+
+// ------------------------------------------------------------------------------
+// 10. Platform Revenue Ledger (YukLa Corporate Treasury)
+// ------------------------------------------------------------------------------
+model PlatformRevenueLedger {
+  id              String   @id @default(uuid())
+  sourceType      String   // "ESCROW_1_PERCENT" | "SUBSCRIPTION_SAAS" | "CORPORATE_WITHDRAWAL"
+  orderId         String?
+  subscriptionId  String?
+  userId          String?
+  amount          BigInt   // Net profit retained in UZS
+  currency        String   @default("UZS")
+  description     String
+  idempotencyKey  String?  @unique
+  settledAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([sourceType])
+  @@index([settledAt])
+}
+
+// ------------------------------------------------------------------------------
+// 11. Driver Wallet (Card Payouts & Earnings)
+// ------------------------------------------------------------------------------
+model DriverWallet {
+  id               String   @id @default(uuid())
+  driverId         String   @unique
+  availableBalance BigInt   @default(0) // Available in UZS
+  totalEarned      BigInt   @default(0) // Lifetime 99% payout sum
+  totalWithdrawn   BigInt   @default(0)
+  cardMask         String?  // e.g. 8600 **** **** 1234
+  cardToken        String?  // Uzcard / Humo Token
+  isFrozen         Boolean  @default(false)
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+
+  @@index([driverId])
+}
+
+// ------------------------------------------------------------------------------
+// 12. Escrow Transaction (Audit-proof 100% Locking Ledger)
+// ------------------------------------------------------------------------------
+model EscrowTransaction {
+  id                String          @id @default(uuid())
+  orderId           String
+  customerId        String
+  driverId          String?
+  grossAmount       BigInt          // 100% locked
+  platformCut1Pct   BigInt          // 1% platform fee
+  driverPayout99Pct BigInt          // 99% carrier payout
+  state             EscrowState     @default(CREATED)
+  paymentProvider   PaymentProvider @default(PAYME)
+  idempotencyKey    String?         @unique
+  heldAt            DateTime?
+  settledAt         DateTime?
+  refundedAt        DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([orderId, state])
+}
+
